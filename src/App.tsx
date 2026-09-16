@@ -1,28 +1,12 @@
 import { getDisplayGroupedTasks } from "./data/tasks";
-import TaskItem from "./components/taskItem";
+import TaskItem from "./components/timelineItems/tasks/taskItem";
 import { loadTasks } from "./data/loadData";
 import { saveTasks } from "./data/saveData";
-import { useState } from "react";
-import type { Task } from "./types/task";
-
+import { useTasksStore } from "./stores/useTasksStore";
 function App() {
-  const [tasks, setTasks] = useState<Task[]>(loadTasks());
-
-  const updateTaskState = (id: string, state: "todo" | "done") => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === id
-          ? {
-              ...task,
-              content: {
-                ...task.content,
-                state,
-              },
-            }
-          : task,
-      ),
-    );
-  };
+  const tasks = useTasksStore((state) => state.tasks);
+  const setTasks = useTasksStore((state) => state.setTasks);
+  setTasks(loadTasks())
 
   const groupedTasks = getDisplayGroupedTasks(tasks);
 
@@ -49,12 +33,6 @@ function App() {
                     <TaskItem
                       key={task.id}
                       task={task}
-                      onToggle={() =>
-                        updateTaskState(
-                          task.id,
-                          task.content.state === "todo" ? "done" : "todo",
-                        )
-                      }
                     />
                   ))}
                 </div>
@@ -74,12 +52,6 @@ function App() {
               <TaskItem
                 key={task.id}
                 task={task}
-                onToggle={() =>
-                  updateTaskState(
-                    task.id,
-                    task.content.state === "todo" ? "done" : "todo",
-                  )
-                }
               />
             ))
           )}
