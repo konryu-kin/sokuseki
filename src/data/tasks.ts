@@ -55,56 +55,24 @@ function addTaskToDateMap(dateMap: DateTaskMap, dateKey: string, task: Task) {
   dateMap[dateKey].push(task);
 }
 
-export function getTasks(): Task[] {
-  return [
-    {
-      id: "1",
-      content: {
-        state: "todo",
-        scheduledDate: "2026-09-17",
-        description: "Reactの学習を進める",
-        dueDate: "2026-09-20",
-      },
-    },
-    {
-      id: "2",
-      content: {
-        state: "done",
-        scheduledDate: "2026-09-16",
-        description: "買い物リストを確認する",
-        dueDate: "2026-09-16",
-      },
-    },
-    {
-      id: "3",
-      content: {
-        state: "todo",
-        scheduledDate: "2026-09-18",
-        description: "チームミーティングの準備をする",
-      },
-    },
-    {
-      id: "4",
-      content: {
-        state: "done",
-        description: "メールの返信を完了する",
-        dueDate: "2026-09-15",
-      },
-    },
-    {
-      id: "5",
-      content: {
-        state: "todo",
-        scheduledDate: "2026-09-19",
-        description: "新しいデザイン案を考える",
-        dueDate: "2026-09-22",
-      },
-    },
-  ];
+function getDateTaskMap(tasks: Task[]): DateTaskMap {
+  const dateTaskMap: DateTaskMap = {};
+
+  for (const task of tasks) {
+    const scheduledDate = task.content.scheduledDate;
+    if (!scheduledDate) continue;
+
+    const date = new Date(scheduledDate);
+    if (Number.isNaN(date.getTime())) continue;
+
+    const dateKey = scheduledDate.slice(0, 10);
+    addTaskToDateMap(dateTaskMap, dateKey, task);
+  }
+
+  return dateTaskMap;
 }
 
-export function getGroupedTasks(): GroupedTasks {
-  const tasks = getTasks();
+function getGroupedTasks(tasks: Task[]): GroupedTasks {
   const groupedTasks: GroupedTasks = {
     past: {},
     today: {},
@@ -113,44 +81,36 @@ export function getGroupedTasks(): GroupedTasks {
     undated: [],
   };
 
+  const dateTaskMap = getDateTaskMap(tasks);
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
 
-  for (const task of tasks) {
-    const scheduledDate = task.content.scheduledDate;
-
-    if (!scheduledDate) {
-      groupedTasks.undated.push(task);
-      continue;
-    }
-
-    const date = new Date(scheduledDate);
-
-    if (Number.isNaN(date.getTime())) {
-      groupedTasks.undated.push(task);
-      continue;
-    }
-
-    const taskDate = new Date(date);
+  for (const [dateKey, tasksForDate] of Object.entries(dateTaskMap)) {
+    const taskDate = new Date(dateKey);
     taskDate.setHours(0, 0, 0, 0);
-    const dateKey = scheduledDate.slice(0, 10);
 
     if (isToday(taskDate)) {
-      addTaskToDateMap(groupedTasks.today, dateKey, task);
+      groupedTasks.today[dateKey] = tasksForDate;
     } else if (isTomorrow(taskDate)) {
-      addTaskToDateMap(groupedTasks.tomorrow, dateKey, task);
+      groupedTasks.tomorrow[dateKey] = tasksForDate;
     } else if (taskDate < todayStart) {
-      addTaskToDateMap(groupedTasks.past, dateKey, task);
+      groupedTasks.past[dateKey] = tasksForDate;
     } else {
-      addTaskToDateMap(groupedTasks.future, dateKey, task);
+      groupedTasks.future[dateKey] = tasksForDate;
+    }
+  }
+
+  for (const task of tasks) {
+    if (!task.content.scheduledDate) {
+      groupedTasks.undated.push(task);
     }
   }
 
   return groupedTasks;
 }
 
-export function getDisplayGroupedTasks(): DisplayGroupedTasks {
-  const groupedTasks = getGroupedTasks();
+export function getDisplayGroupedTasks(tasks: Task[]): DisplayGroupedTasks {
+  const groupedTasks = getGroupedTasks(tasks);
 
   const sortDateEntries = (dateMap: DateTaskMap) =>
     Object.entries(dateMap)

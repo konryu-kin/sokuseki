@@ -1,8 +1,14 @@
 import { getDisplayGroupedTasks } from "./data/tasks";
 import TaskItem from "./components/taskItem";
+import { loadTasks } from "./data/loadData";
+import { saveTasks } from "./data/saveData";
+import { useState } from "react";
+import type { Task } from "./types/task";
 
 function App() {
-  const groupedTasks = getDisplayGroupedTasks();
+  const [tasks] = useState<Task[]>(loadTasks());
+  console.log(tasks)
+  const groupedTasks = getDisplayGroupedTasks(tasks);
 
   const sections = [
     { title: "過去", items: groupedTasks.past },
@@ -45,6 +51,7 @@ function App() {
           )}
         </div>
       </section>
+      <button onClick={()=>(saveTasks(tasks))}>保存する</button>
     </main>
   );
 }
