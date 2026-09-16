@@ -2,3 +2,6 @@
     background-color: aliceblue;
     border: solid 1px #ccc;
 }
+.done{
+    opacity: 0.5;
+}

@@ -1,8 +1,30 @@
 import { getDisplayGroupedTasks } from "./data/tasks";
 import TaskItem from "./components/taskItem";
+import { loadTasks } from "./data/loadData";
+import { saveTasks } from "./data/saveData";
+import { useState } from "react";
+import type { Task } from "./types/task";
 
 function App() {
-  const groupedTasks = getDisplayGroupedTasks();
+  const [tasks, setTasks] = useState<Task[]>(loadTasks());
+
+  const updateTaskState = (id: string, state: "todo" | "done") => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === id
+          ? {
+              ...task,
+              content: {
+                ...task.content,
+                state,
+              },
+            }
+          : task,
+      ),
+    );
+  };
+
+  const groupedTasks = getDisplayGroupedTasks(tasks);
 
   const sections = [
     { title: "過去", items: groupedTasks.past },
@@ -20,11 +42,20 @@ function App() {
             {items.length === 0 ? (
               <p>なし</p>
             ) : (
-              items.map(({ date, tasks }) => (
+              items.map(({ date, tasks: tasksForDate }) => (
                 <div key={date}>
                   <p>{date}</p>
-                  {tasks.map((task) => (
-                    <TaskItem key={task.id} task={task} />
+                  {tasksForDate.map((task) => (
+                    <TaskItem
+                      key={task.id}
+                      task={task}
+                      onToggle={() =>
+                        updateTaskState(
+                          task.id,
+                          task.content.state === "todo" ? "done" : "todo",
+                        )
+                      }
+                    />
                   ))}
                 </div>
               ))
@@ -40,11 +71,21 @@ function App() {
             <p>なし</p>
           ) : (
             groupedTasks.undated.map((task) => (
-              <TaskItem key={task.id} task={task} />
+              <TaskItem
+                key={task.id}
+                task={task}
+                onToggle={() =>
+                  updateTaskState(
+                    task.id,
+                    task.content.state === "todo" ? "done" : "todo",
+                  )
+                }
+              />
             ))
           )}
         </div>
       </section>
+      <button onClick={() => saveTasks(tasks)}>保存する</button>
     </main>
   );
 }
