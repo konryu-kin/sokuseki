@@ -1,4 +1,5 @@
 import type { Task } from "../types/task";
+import { isToday, isTomorrow } from "../utils/date";
 
 export type TaskGroupName = "past" | "today" | "tomorrow" | "future";
 export type DateTaskMap = Record<string, Task[]>;
@@ -24,29 +25,6 @@ export type DisplayGroupedTasks = {
   undated: Task[];
 };
 
-function isToday(date: Date) {
-  const today = new Date();
-
-  return (
-    date.getFullYear() === today.getFullYear() &&
-    date.getMonth() === today.getMonth() &&
-    date.getDate() === today.getDate()
-  );
-}
-
-function isTomorrow(date: Date) {
-  const today = new Date();
-  const tomorrow = new Date(today);
-
-  tomorrow.setDate(today.getDate() + 1);
-
-  return (
-    date.getFullYear() === tomorrow.getFullYear() &&
-    date.getMonth() === tomorrow.getMonth() &&
-    date.getDate() === tomorrow.getDate()
-  );
-}
-
 function addTaskToDateMap(dateMap: DateTaskMap, dateKey: string, task: Task) {
   if (!dateMap[dateKey]) {
     dateMap[dateKey] = [];
@@ -55,7 +33,7 @@ function addTaskToDateMap(dateMap: DateTaskMap, dateKey: string, task: Task) {
   dateMap[dateKey].push(task);
 }
 
-function getDateTaskMap(tasks: Task[]): DateTaskMap {
+export function getDateTaskMap(tasks: Task[]): DateTaskMap {
   const dateTaskMap: DateTaskMap = {};
 
   for (const task of tasks) {
@@ -116,13 +94,18 @@ export function getDisplayGroupedTasks(tasks: Task[]): DisplayGroupedTasks {
   const sortDateEntries = (dateMap: DateTaskMap) =>
     Object.entries(dateMap)
       .sort(([a], [b]) => new Date(a).getTime() - new Date(b).getTime())
-      .map(([date, tasks]) => ({ date, tasks }));
+      .map(([date, tasks]) => ({
+        date,
+        tasks: [...tasks].sort((a, b) => a.defaultOrder - b.defaultOrder),
+      }));
 
   return {
     past: sortDateEntries(groupedTasks.past),
     today: sortDateEntries(groupedTasks.today),
     tomorrow: sortDateEntries(groupedTasks.tomorrow),
     future: sortDateEntries(groupedTasks.future),
-    undated: groupedTasks.undated,
+    undated: [...groupedTasks.undated].sort(
+      (a, b) => a.defaultOrder - b.defaultOrder,
+    ),
   };
 }
