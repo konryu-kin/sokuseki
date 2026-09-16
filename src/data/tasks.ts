@@ -1,6 +1,28 @@
 import type { Task } from "../types/task";
 
-export type TaskGroupName = "past" | "today" | "tomorrow" | "future" | "undated";
+export type TaskGroupName = "past" | "today" | "tomorrow" | "future";
+export type DateTaskMap = Record<string, Task[]>;
+
+export type GroupedTasks = {
+  past: DateTaskMap;
+  today: DateTaskMap;
+  tomorrow: DateTaskMap;
+  future: DateTaskMap;
+  undated: Task[];
+};
+
+export type SortedGroup = {
+  date: string;
+  tasks: Task[];
+};
+
+export type DisplayGroupedTasks = {
+  past: SortedGroup[];
+  today: SortedGroup[];
+  tomorrow: SortedGroup[];
+  future: SortedGroup[];
+  undated: Task[];
+};
 
 function isToday(date: Date) {
   const today = new Date();
@@ -23,6 +45,14 @@ function isTomorrow(date: Date) {
     date.getMonth() === tomorrow.getMonth() &&
     date.getDate() === tomorrow.getDate()
   );
+}
+
+function addTaskToDateMap(dateMap: DateTaskMap, dateKey: string, task: Task) {
+  if (!dateMap[dateKey]) {
+    dateMap[dateKey] = [];
+  }
+
+  dateMap[dateKey].push(task);
 }
 
 export function getTasks(): Task[] {
@@ -73,13 +103,13 @@ export function getTasks(): Task[] {
   ];
 }
 
-export function getGroupedTasks(): Record<TaskGroupName, Task[]> {
+export function getGroupedTasks(): GroupedTasks {
   const tasks = getTasks();
-  const groupedTasks: Record<TaskGroupName, Task[]> = {
-    past: [],
-    today: [],
-    tomorrow: [],
-    future: [],
+  const groupedTasks: GroupedTasks = {
+    past: {},
+    today: {},
+    tomorrow: {},
+    future: {},
     undated: [],
   };
 
@@ -103,17 +133,35 @@ export function getGroupedTasks(): Record<TaskGroupName, Task[]> {
 
     const taskDate = new Date(date);
     taskDate.setHours(0, 0, 0, 0);
+    const dateKey = scheduledDate.slice(0, 10);
 
     if (isToday(taskDate)) {
-      groupedTasks.today.push(task);
+      addTaskToDateMap(groupedTasks.today, dateKey, task);
     } else if (isTomorrow(taskDate)) {
-      groupedTasks.tomorrow.push(task);
+      addTaskToDateMap(groupedTasks.tomorrow, dateKey, task);
     } else if (taskDate < todayStart) {
-      groupedTasks.past.push(task);
+      addTaskToDateMap(groupedTasks.past, dateKey, task);
     } else {
-      groupedTasks.future.push(task);
+      addTaskToDateMap(groupedTasks.future, dateKey, task);
     }
   }
 
   return groupedTasks;
+}
+
+export function getDisplayGroupedTasks(): DisplayGroupedTasks {
+  const groupedTasks = getGroupedTasks();
+
+  const sortDateEntries = (dateMap: DateTaskMap) =>
+    Object.entries(dateMap)
+      .sort(([a], [b]) => new Date(a).getTime() - new Date(b).getTime())
+      .map(([date, tasks]) => ({ date, tasks }));
+
+  return {
+    past: sortDateEntries(groupedTasks.past),
+    today: sortDateEntries(groupedTasks.today),
+    tomorrow: sortDateEntries(groupedTasks.tomorrow),
+    future: sortDateEntries(groupedTasks.future),
+    undated: groupedTasks.undated,
+  };
 }

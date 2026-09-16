@@ -1,53 +1,48 @@
-import { getGroupedTasks } from "./data/tasks";
+import { getDisplayGroupedTasks } from "./data/tasks";
 import TaskItem from "./components/taskItem";
 
 function App() {
-  const groupedTasks = getGroupedTasks();
+  const groupedTasks = getDisplayGroupedTasks();
+
+  const sections = [
+    { title: "過去", items: groupedTasks.past },
+    { title: "今日", items: groupedTasks.today },
+    { title: "明日", items: groupedTasks.tomorrow },
+    { title: "未来", items: groupedTasks.future },
+  ];
 
   return (
     <main>
-      <section>
-        <h2>過去</h2>
-        <div>
-          {groupedTasks.past.map((task) => (
-            <TaskItem key={task.id} task={task} />
-          ))}
-        </div>
-      </section>
+      {sections.map(({ title, items }) => (
+        <section key={title}>
+          <h2>{title}</h2>
+          <div>
+            {items.length === 0 ? (
+              <p>なし</p>
+            ) : (
+              items.map(({ date, tasks }) => (
+                <div key={date}>
+                  <p>{date}</p>
+                  {tasks.map((task) => (
+                    <TaskItem key={task.id} task={task} />
+                  ))}
+                </div>
+              ))
+            )}
+          </div>
+        </section>
+      ))}
 
       <section>
-        <h2>今日</h2>
+        <h2>日付なし</h2>
         <div>
-          {groupedTasks.today.map((task) => (
-            <TaskItem key={task.id} task={task} />
-          ))}
-        </div>
-      </section>
-
-      <section>
-        <h2>明日</h2>
-        <div>
-          {groupedTasks.tomorrow.map((task) => (
-            <TaskItem key={task.id} task={task} />
-          ))}
-        </div>
-      </section>
-
-      <section>
-        <h2>未来</h2>
-        <div>
-          {groupedTasks.future.map((task) => (
-            <TaskItem key={task.id} task={task} />
-          ))}
-        </div>
-      </section>
-
-      <section>
-        <h2>いつか</h2>
-        <div>
-          {groupedTasks.undated.map((task) => (
-            <TaskItem key={task.id} task={task} />
-          ))}
+          {groupedTasks.undated.length === 0 ? (
+            <p>なし</p>
+          ) : (
+            groupedTasks.undated.map((task) => (
+              <TaskItem key={task.id} task={task} />
+            ))
+          )}
         </div>
       </section>
     </main>
