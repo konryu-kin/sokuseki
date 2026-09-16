@@ -1,5 +1,30 @@
 import type { Task } from "../types/task";
 
+export type TaskGroupName = "past" | "today" | "tomorrow" | "future" | "undated";
+
+function isToday(date: Date) {
+  const today = new Date();
+
+  return (
+    date.getFullYear() === today.getFullYear() &&
+    date.getMonth() === today.getMonth() &&
+    date.getDate() === today.getDate()
+  );
+}
+
+function isTomorrow(date: Date) {
+  const today = new Date();
+  const tomorrow = new Date(today);
+
+  tomorrow.setDate(today.getDate() + 1);
+
+  return (
+    date.getFullYear() === tomorrow.getFullYear() &&
+    date.getMonth() === tomorrow.getMonth() &&
+    date.getDate() === tomorrow.getDate()
+  );
+}
+
 export function getTasks(): Task[] {
   return [
     {
@@ -46,4 +71,49 @@ export function getTasks(): Task[] {
       },
     },
   ];
+}
+
+export function getGroupedTasks(): Record<TaskGroupName, Task[]> {
+  const tasks = getTasks();
+  const groupedTasks: Record<TaskGroupName, Task[]> = {
+    past: [],
+    today: [],
+    tomorrow: [],
+    future: [],
+    undated: [],
+  };
+
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+
+  for (const task of tasks) {
+    const scheduledDate = task.content.scheduledDate;
+
+    if (!scheduledDate) {
+      groupedTasks.undated.push(task);
+      continue;
+    }
+
+    const date = new Date(scheduledDate);
+
+    if (Number.isNaN(date.getTime())) {
+      groupedTasks.undated.push(task);
+      continue;
+    }
+
+    const taskDate = new Date(date);
+    taskDate.setHours(0, 0, 0, 0);
+
+    if (isToday(taskDate)) {
+      groupedTasks.today.push(task);
+    } else if (isTomorrow(taskDate)) {
+      groupedTasks.tomorrow.push(task);
+    } else if (taskDate < todayStart) {
+      groupedTasks.past.push(task);
+    } else {
+      groupedTasks.future.push(task);
+    }
+  }
+
+  return groupedTasks;
 }
