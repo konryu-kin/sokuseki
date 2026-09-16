@@ -109,6 +109,7 @@ function getGroupedTasks(tasks: Task[]): GroupedTasks {
   return groupedTasks;
 }
 
+// 表示用にデータをまとめたもの
 export function getDisplayGroupedTasks(tasks: Task[]): DisplayGroupedTasks {
   const groupedTasks = getGroupedTasks(tasks);
 
