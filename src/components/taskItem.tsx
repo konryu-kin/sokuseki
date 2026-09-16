@@ -6,11 +6,12 @@ type Props = {
 };
 
 export default function TaskItem({ task }: Props) {
-  const { description } = task.content;
+  const { description,dueDate } = task.content;
   return (
     <div className={styles.itemBoard}>
       <p>{task.id}</p>
       {description && <p>{description}</p>}
+      {dueDate && <p>{dueDate}まで</p>}
     </div>
   );
 }
