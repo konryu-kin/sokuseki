@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import { getDisplayGroupedTasks } from "./data/tasks";
 import TaskItem from "./components/timelineItems/tasks/taskItem";
-import { loadEvents, loadTasks } from "./data/loadData";
+import { loadContextTags, loadEvents, loadTasks } from "./data/loadData";
 import { saveEvents, saveTasks } from "./data/saveData";
 import { useTasksStore } from "./stores/useTasksStore";
 import { useEventsStore } from "./stores/useEventsStore";
+import { useContextTagsStore } from "./stores/useContextTagsStore";
 import { getGroupedTimelineItems } from "./data/timelineItems";
 import TimelineItem from "./components/timelineItems/timelineItem";
 
@@ -15,10 +16,13 @@ function App() {
   const events = useEventsStore((state) => state.events);
   const setEvents = useEventsStore((state) => state.setEvents);
 
+  const setContextTags = useContextTagsStore((state) => state.setContextTags);
+
   useEffect(() => {
     setTasks(loadTasks());
     setEvents(loadEvents());
-  }, [setTasks, setEvents]);
+    setContextTags(loadContextTags());
+  }, [setTasks, setEvents, setContextTags]);
 
   const groupedTimelineItems = getGroupedTimelineItems({ tasks, events });
   const groupedTasks = getDisplayGroupedTasks(tasks);

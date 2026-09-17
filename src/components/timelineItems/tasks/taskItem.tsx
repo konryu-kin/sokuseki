@@ -1,6 +1,7 @@
 import type { Task } from "../../../types/task";
 import styles from "./taskItem.module.css";
 import { useTasksStore } from "../../../stores/useTasksStore";
+import ContextTagsArea from "../smallParts/contextTagsArea";
 
 type Props = {
   task: Task;
@@ -19,7 +20,7 @@ export default function TaskItem({ task }: Props) {
         .filter(Boolean)
         .join(" ")}
     >
-      <p>{task.id}</p>
+      <ContextTagsArea contextTagId={task.content.contextTagId ?? null} />
       {description && <p>{description}</p>}
       {dueDate && <p>{dueDate}まで</p>}
       <button type="button" onClick={onToggle}>

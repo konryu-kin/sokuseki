@@ -1,7 +1,8 @@
-.itemBoard{
-    background-color: aliceblue;
-    border: solid 1px #ccc;
+.itemBoard {
+  background-color: aliceblue;
+  border: solid 1px #ccc;
+  margin: 16px;
 }
-.done{
-    opacity: 0.5;
+.done {
+  opacity: 0.5;
 }
