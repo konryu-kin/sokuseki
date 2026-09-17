@@ -1,39 +1,49 @@
+import { useEffect } from "react";
 import { getDisplayGroupedTasks } from "./data/tasks";
 import TaskItem from "./components/timelineItems/tasks/taskItem";
-import { loadTasks } from "./data/loadData";
-import { saveTasks } from "./data/saveData";
+import { loadEvents, loadTasks } from "./data/loadData";
+import { saveEvents, saveTasks } from "./data/saveData";
 import { useTasksStore } from "./stores/useTasksStore";
+import { useEventsStore } from "./stores/useEventsStore";
+import { getGroupedTimelineItems } from "./data/timelineItems";
+import TimelineItem from "./components/timelineItems/timelineItem";
+
 function App() {
   const tasks = useTasksStore((state) => state.tasks);
   const setTasks = useTasksStore((state) => state.setTasks);
-  setTasks(loadTasks())
 
+  const events = useEventsStore((state) => state.events);
+  const setEvents = useEventsStore((state) => state.setEvents);
+
+  useEffect(() => {
+    setTasks(loadTasks());
+    setEvents(loadEvents());
+  }, [setTasks, setEvents]);
+
+  const groupedTimelineItems = getGroupedTimelineItems({ tasks, events });
   const groupedTasks = getDisplayGroupedTasks(tasks);
 
   const sections = [
-    { title: "過去", items: groupedTasks.past },
-    { title: "今日", items: groupedTasks.today },
-    { title: "明日", items: groupedTasks.tomorrow },
-    { title: "未来", items: groupedTasks.future },
+    { title: "過去", dateGroups: groupedTimelineItems.past },
+    { title: "今日", dateGroups: groupedTimelineItems.today },
+    { title: "明日", dateGroups: groupedTimelineItems.tomorrow },
+    { title: "未来", dateGroups: groupedTimelineItems.future },
   ];
 
   return (
     <main>
-      {sections.map(({ title, items }) => (
+      {sections.map(({ title, dateGroups }) => (
         <section key={title}>
           <h2>{title}</h2>
           <div>
-            {items.length === 0 ? (
+            {dateGroups.length === 0 ? (
               <p>なし</p>
             ) : (
-              items.map(({ date, tasks: tasksForDate }) => (
+              dateGroups.map(({ date, items }) => (
                 <div key={date}>
                   <p>{date}</p>
-                  {tasksForDate.map((task) => (
-                    <TaskItem
-                      key={task.id}
-                      task={task}
-                    />
+                  {items.map((item) => (
+                    <TimelineItem key={`${item.type}-${item.data.id}`} timelineItem={item} />
                   ))}
                 </div>
               ))
@@ -49,15 +59,19 @@ function App() {
             <p>なし</p>
           ) : (
             groupedTasks.undated.map((task) => (
-              <TaskItem
-                key={task.id}
-                task={task}
-              />
+              <TaskItem key={task.id} task={task} />
             ))
           )}
         </div>
       </section>
-      <button onClick={() => saveTasks(tasks)}>保存する</button>
+      <button
+        onClick={() => {
+          saveTasks(tasks);
+          saveEvents(events);
+        }}
+      >
+        保存する
+      </button>
     </main>
   );
 }

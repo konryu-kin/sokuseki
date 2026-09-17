@@ -50,6 +50,11 @@ export function getDateTaskMap(tasks: Task[]): DateTaskMap {
   return dateTaskMap;
 }
 
+export function getUndatedTasks(tasks:Task[]): Task[] {
+  const undatedTasks = tasks.filter((task) => !task.content.scheduledDate)
+  return undatedTasks
+}
+
 function getGroupedTasks(tasks: Task[]): GroupedTasks {
   const groupedTasks: GroupedTasks = {
     past: {},

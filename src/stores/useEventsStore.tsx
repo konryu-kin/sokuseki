@@ -7,7 +7,7 @@ interface EventsStore {
   setEvents: (events: Event[]) => void;
 }
 
-export const useTasksStore = create<EventsStore>((set) => ({
+export const useEventsStore = create<EventsStore>((set) => ({
   events: [],
 
   setEvents: (events) => set(() => ({ events }))
