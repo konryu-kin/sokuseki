@@ -3,7 +3,7 @@ import type { DateTimeSpecifier } from "./dateTimeSpecifier";
 
 export type Event = {
   id: string;
-  defaultOrder: number;
+  defaultOrder: number;// timeRange.start.getTime()をデフォルトにしたい
   content: {
     contextTagId?: ContextTag["id"];
     name: string;

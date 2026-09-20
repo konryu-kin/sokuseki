@@ -1,4 +1,4 @@
-import type { Task } from "./task";
+import type { TaskTemplate } from "./task";
 import type { EventTemplate } from "./event";
 
 export type ContextTag = {
@@ -8,17 +8,17 @@ export type ContextTag = {
   generatedItemOptions?: GeneratedItemOption[];
 };
 export type GeneratedItemOption = {
-    optionName: string;
-    rules: (
-      | {
-          itemType: "event";
-          executionTiming: "auto" | "manual";
-          ItemTemplate: EventTemplate;
-        }
-      | {
-          itemType: "task";
-          executionTiming: "auto" | "manual";
-          ItemTemplate: Task;
-        }
-    )[];
-  }
+  optionName: string;
+  rules: (
+    | {
+        itemType: "event";
+        executionTiming: "auto" | "manual";
+        ItemTemplate: EventTemplate;
+      }
+    | {
+        itemType: "task";
+        executionTiming: "auto" | "manual";
+        ItemTemplate: TaskTemplate;
+      }
+  )[];
+};

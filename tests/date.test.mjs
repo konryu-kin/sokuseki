@@ -3,6 +3,7 @@ import test from "node:test";
 import {
   resolveAbsoluteDate,
   resolveAbsoluteTime,
+  resolveDateTimeSpecifier,
   resolveRelativeDate,
   resolveRelativeTime,
 } from "../src/utils/date.ts";
@@ -100,6 +101,98 @@ test("resolves relative times across midnight", () => {
   assert.throws(
     () => resolveRelativeTime({ hour: -1, minute: 0 }, base),
     RangeError,
+  );
+});
+
+test("resolves a complete DateTimeSpecifier", () => {
+  assert.equal(
+    resolveDateTimeSpecifier({}, new Date(2026, 8, 20, 15, 30, 45)),
+    "2026-09-20T15:30:45",
+  );
+  assert.equal(
+    resolveDateTimeSpecifier(
+      {
+        date: {
+          type: "absolute",
+          specifier: { type: "day-base", year: 2026, month: 9, day: 19 },
+        },
+      },
+      new Date(2026, 8, 20, 15, 30, 45),
+    ),
+    "2026-09-19T00:00:00",
+  );
+  assert.equal(
+    resolveDateTimeSpecifier(
+      { time: { type: "absolute", specifier: { hour: 9, minute: 0 } } },
+      new Date(2026, 8, 20, 15, 30, 0),
+    ),
+    "2026-09-20T09:00:00",
+  );
+  assert.equal(
+    resolveDateTimeSpecifier(
+      { time: { type: "relative", specifier: { hour: 2, minute: 30 } } },
+      new Date(2026, 8, 20, 23, 0, 0),
+    ),
+    "2026-09-21T01:30:00",
+  );
+  assert.equal(
+    resolveDateTimeSpecifier(
+      {
+        date: {
+          type: "absolute",
+          specifier: { type: "day-base", year: 2026, month: 9, day: 19 },
+        },
+        time: { type: "absolute", specifier: { hour: 9, minute: 0 } },
+      },
+      new Date(2026, 8, 20, 15, 30, 0),
+    ),
+    "2026-09-19T09:00:00",
+  );
+  assert.equal(
+    resolveDateTimeSpecifier(
+      {
+        date: {
+          type: "relative",
+          specifier: { base: "day", expression: { offset: { day: -1 } } },
+        },
+        time: { type: "absolute", specifier: { hour: 9, minute: 0 } },
+      },
+      new Date(2026, 8, 20, 15, 30, 0),
+    ),
+    "2026-09-19T09:00:00",
+  );
+  assert.equal(
+    resolveDateTimeSpecifier(
+      {
+        date: {
+          type: "relative",
+          specifier: { base: "day", expression: { offset: { day: -1 } } },
+        },
+        time: { type: "relative", specifier: { hour: 2, minute: 30 } },
+      },
+      new Date(2026, 8, 20, 15, 30, 0),
+    ),
+    "2026-09-19T02:30:00",
+  );
+  assert.equal(
+    resolveDateTimeSpecifier(
+      { time: { type: "relative", specifier: { hour: 2, minute: 0 } } },
+      new Date(2026, 8, 20, 23, 30, 0),
+    ),
+    "2026-09-21T01:30:00",
+  );
+  assert.equal(
+    resolveDateTimeSpecifier(
+      {
+        date: {
+          type: "absolute",
+          specifier: { type: "day-base", year: 2026, month: 9, day: 20 },
+        },
+        time: { type: "relative", specifier: { hour: 25, minute: 0 } },
+      },
+      new Date(2026, 8, 20, 15, 30, 0),
+    ),
+    "2026-09-21T01:00:00",
   );
 });
 
