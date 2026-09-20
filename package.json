@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "test:date": "node --test tests/date.test.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },
