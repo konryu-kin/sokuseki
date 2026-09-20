@@ -1,3 +1,4 @@
+import { Fragment } from "react/jsx-runtime";
 import { useModalStore } from "../../stores/useModalStore";
 import GeneratedItemRulesSelect from "./generatedItemRulesSelect";
 
@@ -6,20 +7,18 @@ export default function Modal() {
   const generatedItemRulesSelectContext = useModalStore(
     (state) => state.generateItemRulesSelectContext,
   );
-  const RulesSelectModal =
-    modals.some((x) => x === "generatedItemRulesSelect") &&
-    generatedItemRulesSelectContext?.parentItem ? (
-      <GeneratedItemRulesSelect
-        parentItem={generatedItemRulesSelectContext?.parentItem}
-      />
-    ) : null;
+  const RulesSelectModal = generatedItemRulesSelectContext?.parentItem ? (
+    <GeneratedItemRulesSelect
+      parentItem={generatedItemRulesSelectContext?.parentItem}
+    />
+  ) : null;
   return (
     <div>
-      {modals.map((modal) => (
-        <>
+      {modals.map((modal, i) => (
+        <Fragment key={`modal-${i}`}>
           <div className="modalOverlay"></div>
           {modal === "generatedItemRulesSelect" ? RulesSelectModal : null}
-        </>
+        </Fragment>
       ))}
     </div>
   );

@@ -165,6 +165,110 @@ export function loadContextTags(): ContextTag[] {
       id: "5",
       name: "ね局",
       parentId: "4",
+      generatedItemOptions: [
+        {
+          optionName: "活動の準備を作成",
+          rules: [
+            {
+              itemType: "task",
+              executionTiming: "manual",
+              ItemTemplate: {
+                content: {
+                  contextTagId: "5",
+                  state: "todo",
+                  scheduledDate: {
+                    date: {
+                      type: "relative",
+                      specifier: {
+                        base: "day",
+                        expression: { offset: { day: -1 } },
+                      },
+                    },
+                    time: {
+                      type: "absolute",
+                      specifier: { hour: 18, minute: 0 },
+                    },
+                  },
+                  description: "ね局の活動に向けて準備する",
+                },
+              },
+            },
+          ],
+        },
+        {
+          optionName: "活動後の振り返りを作成",
+          rules: [
+            {
+              itemType: "task",
+              executionTiming: "manual",
+              ItemTemplate: {
+                content: {
+                  contextTagId: "5",
+                  state: "todo",
+                  scheduledDate: {
+                    date: {
+                      type: "relative",
+                      specifier: {
+                        base: "day",
+                        expression: { offset: { day: 0 } },
+                      },
+                    },
+                    time: {
+                      type: "absolute",
+                      specifier: { hour: 20, minute: 0 },
+                    },
+                  },
+                  description: "活動内容を振り返って記録する",
+                },
+              },
+            },
+          ],
+        },
+        {
+          optionName: "活動後の共有会を作成",
+          rules: [
+            {
+              itemType: "event",
+              executionTiming: "manual",
+              ItemTemplate: {
+                content: {
+                  contextTagId: "5",
+                  name: "ね局 活動後の共有会",
+                  description: "活動の成果や気づきを共有する",
+                  timeRange: {
+                    start: {
+                      date: {
+                        type: "relative",
+                        specifier: {
+                          base: "day",
+                          expression: { offset: { day: 0 } },
+                        },
+                      },
+                      time: {
+                        type: "absolute",
+                        specifier: { hour: 21, minute: 0 },
+                      },
+                    },
+                    end: {
+                      date: {
+                        type: "relative",
+                        specifier: {
+                          base: "day",
+                          expression: { offset: { day: 0 } },
+                        },
+                      },
+                      time: {
+                        type: "absolute",
+                        specifier: { hour: 22, minute: 0 },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          ],
+        },
+      ],
     },
     {
       id: "6",
