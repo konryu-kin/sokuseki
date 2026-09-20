@@ -1,4 +1,9 @@
 import type { RelativeDateSpecifier } from "../types/relativeDateSpecifier";
+import type {
+  AbsoluteDateSpecifier,
+  AbsoluteTimeSpecifier,
+  RelativeTimeSpecifier,
+} from "../types/dateTimeSpecifier";
 
 export function isToday(date: Date) {
   const today = new Date();
@@ -115,6 +120,64 @@ function formatDate(date: Date) {
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
+}
+
+function formatTime(date: Date) {
+  const hour = String(date.getHours()).padStart(2, "0");
+  const minute = String(date.getMinutes()).padStart(2, "0");
+  return `${hour}:${minute}`;
+}
+
+function assertTimePart(value: number, name: string, maximum: number) {
+  assertInteger(value, name);
+  if (value < 0 || value > maximum) {
+    throw new RangeError(`${name} must be between 0 and ${maximum}`);
+  }
+}
+
+export function resolveAbsoluteDate(specifier: AbsoluteDateSpecifier): string {
+  const resolved =
+    specifier.type === "day-base"
+      ? createExactDate(specifier.year, specifier.month, specifier.day)
+      : getNthWeekday(
+          specifier.year,
+          specifier.month,
+          specifier.week,
+          specifier.day,
+        );
+
+  return formatDate(resolved);
+}
+
+export function resolveAbsoluteTime(specifier: AbsoluteTimeSpecifier): string {
+  assertTimePart(specifier.hour, "hour", 23);
+  assertTimePart(specifier.minute, "minute", 59);
+
+  const date = new Date(0);
+  date.setHours(specifier.hour, specifier.minute, 0, 0);
+  return formatTime(date);
+}
+
+export function resolveRelativeTime(
+  base: Date,
+  specifier: RelativeTimeSpecifier,
+): Date {
+  if (Number.isNaN(base.getTime())) {
+    throw new RangeError("base must be a valid date");
+  }
+
+  const hour = specifier.hour ?? 0;
+  assertInteger(hour, "hour");
+  assertInteger(specifier.minute, "minute");
+  if (hour < 0 || specifier.minute < 0) {
+    throw new RangeError("relative time must not be negative");
+  }
+  if (specifier.minute > 59) {
+    throw new RangeError("minute must be between 0 and 59");
+  }
+
+  const elapsedMinutes = hour * 60 + specifier.minute;
+  return new Date(base.getTime() + elapsedMinutes * 60 * 1000);
 }
 
 export function resolveRelativeDate(specifier: RelativeDateSpecifier): string {
