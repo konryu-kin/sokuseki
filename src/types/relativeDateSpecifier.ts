@@ -1,7 +1,6 @@
 export type RelativeDateSpecifier =
   | {
       base: "day";
-      reference: string;
       expression: {
         offset: {
           day: number;
@@ -10,7 +9,6 @@ export type RelativeDateSpecifier =
     }
   | {
       base: "week";
-      reference: string;
       expression: {
         offset: {
           week: number;
@@ -22,7 +20,6 @@ export type RelativeDateSpecifier =
     }
   | {
       base: "month";
-      reference: string;
       expression: {
         offset: {
           month: number;
@@ -41,7 +38,6 @@ export type RelativeDateSpecifier =
     }
   | {
       base: "year";
-      reference: string;
       expression: {
         offset: {
           year: number;

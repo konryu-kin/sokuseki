@@ -1,4 +1,5 @@
 import type { ContextTag } from "./contextTag";
+import type { DateTimeSpecifier } from "./dateTimeSpecifier";
 
 export type Event = {
   id: string;
@@ -20,8 +21,8 @@ export type EventTemplate = {
     name: string;
     description?: string;
     timeRange: {
-      start: string;
-      end?: string;
+      start: DateTimeSpecifier;
+      end?: DateTimeSpecifier;
     };
   };
 }

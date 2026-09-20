@@ -8,11 +8,13 @@ import {
 } from "../src/utils/date.ts";
 
 const resolve = (base, reference, offset, specifier) =>
-  resolveRelativeDate({
-    base,
+  resolveRelativeDate(
+    {
+      base,
+      expression: { offset, ...(specifier ? { specifier } : {}) },
+    },
     reference,
-    expression: { offset, ...(specifier ? { specifier } : {}) },
-  });
+  );
 
 test("resolves absolute dates", () => {
   assert.equal(
@@ -70,34 +72,49 @@ test("resolves absolute times", () => {
 test("resolves relative times across midnight", () => {
   const base = new Date(2026, 8, 20, 12, 0, 0, 0);
   assert.equal(
-    resolveRelativeTime(base, { minute: 30 }).toString(),
+    resolveRelativeTime({ minute: 30 }, base).toString(),
     new Date(2026, 8, 20, 12, 30).toString(),
   );
   assert.equal(
-    resolveRelativeTime(base, { hour: 2, minute: 0 }).toString(),
+    resolveRelativeTime({ hour: 2, minute: 0 }, base).toString(),
     new Date(2026, 8, 20, 14, 0).toString(),
   );
   assert.equal(
-    resolveRelativeTime(base, { hour: 2, minute: 30 }).toString(),
+    resolveRelativeTime({ hour: 2, minute: 30 }, base).toString(),
     new Date(2026, 8, 20, 14, 30).toString(),
   );
   assert.equal(
-    resolveRelativeTime(new Date(2026, 8, 20, 23, 30), {
-      hour: 2,
-      minute: 0,
-    }).toString(),
+    resolveRelativeTime(
+      { hour: 2, minute: 0 },
+      new Date(2026, 8, 20, 23, 30),
+    ).toString(),
     new Date(2026, 8, 21, 1, 30).toString(),
   );
   assert.equal(
-    resolveRelativeTime(new Date(2026, 8, 20, 23, 45), {
-      minute: 30,
-    }).toString(),
+    resolveRelativeTime(
+      { minute: 30 },
+      new Date(2026, 8, 20, 23, 45),
+    ).toString(),
     new Date(2026, 8, 21, 0, 15).toString(),
   );
   assert.throws(
-    () => resolveRelativeTime(base, { hour: -1, minute: 0 }),
+    () => resolveRelativeTime({ hour: -1, minute: 0 }, base),
     RangeError,
   );
+});
+
+test("reuses a relative date rule with different references", () => {
+  const rule = {
+    base: "day",
+    expression: {
+      offset: {
+        day: -1,
+      },
+    },
+  };
+
+  assert.equal(resolveRelativeDate(rule, "2026-09-20"), "2026-09-19");
+  assert.equal(resolveRelativeDate(rule, "2026-10-10"), "2026-10-09");
 });
 
 test("resolves day offsets", () => {

@@ -159,11 +159,11 @@ export function resolveAbsoluteTime(specifier: AbsoluteTimeSpecifier): string {
 }
 
 export function resolveRelativeTime(
-  base: Date,
   specifier: RelativeTimeSpecifier,
+  reference: Date,
 ): Date {
-  if (Number.isNaN(base.getTime())) {
-    throw new RangeError("base must be a valid date");
+  if (Number.isNaN(reference.getTime())) {
+    throw new RangeError("reference must be a valid date");
   }
 
   const hour = specifier.hour ?? 0;
@@ -177,11 +177,14 @@ export function resolveRelativeTime(
   }
 
   const elapsedMinutes = hour * 60 + specifier.minute;
-  return new Date(base.getTime() + elapsedMinutes * 60 * 1000);
+  return new Date(reference.getTime() + elapsedMinutes * 60 * 1000);
 }
 
-export function resolveRelativeDate(specifier: RelativeDateSpecifier): string {
-  const reference = parseReference(specifier.reference);
+export function resolveRelativeDate(
+  specifier: RelativeDateSpecifier,
+  referenceString: string,
+): string {
+  const reference = parseReference(referenceString);
   let resolved: Date;
 
   switch (specifier.base) {
