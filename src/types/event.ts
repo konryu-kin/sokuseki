@@ -13,3 +13,15 @@ export type Event = {
     };
   };
 };
+
+export type EventTemplate = {
+  content: {
+    contextTagId?: ContextTag["id"];
+    name: string;
+    description?: string;
+    timeRange: {
+      start: string;
+      end?: string;
+    };
+  };
+}
