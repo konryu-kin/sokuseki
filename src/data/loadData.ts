@@ -13,7 +13,7 @@ export function loadTasks(): Task[] {
       id: "1",
       defaultOrder: 2,
       content: {
-        contextTagId:"5",
+        contextTagId: "5",
         state: "todo",
         scheduledDate: "2026-09-17",
         description: "Reactの学習を進める",
@@ -52,7 +52,7 @@ export function loadTasks(): Task[] {
       id: "5",
       defaultOrder: 2,
       content: {
-        contextTagId:"5",
+        contextTagId: "5",
         state: "todo",
         scheduledDate: "2026-09-19",
         description: "新しいデザイン案を考える",
@@ -72,12 +72,12 @@ export function loadEvents(): Event[] {
       id: "1",
       defaultOrder: 2,
       content: {
-        contextTagId:"5",
+        contextTagId: "5",
         name: "React学習",
         description: "Reactの基本を学ぶ時間",
         timeRange: {
-          start: "2026-09-17T09:00:00",
-          end: "2026-09-17T10:30:00",
+          start: "2026-09-19T09:00:00",
+          end: "2026-09-19T10:30:00",
         },
       },
     },
@@ -88,8 +88,8 @@ export function loadEvents(): Event[] {
         name: "買い物",
         description: "スーパーで必要なものを買う",
         timeRange: {
-          start: "2026-09-16T18:00:00",
-          end: "2026-09-16T19:00:00",
+          start: "2026-09-20T18:00:00",
+          end: "2026-09-20T19:00:00",
         },
       },
     },
@@ -97,12 +97,12 @@ export function loadEvents(): Event[] {
       id: "3",
       defaultOrder: 3,
       content: {
-        contextTagId:"3",
+        contextTagId: "3",
         name: "チームミーティング",
         description: "今週の進捗確認",
         timeRange: {
-          start: "2026-09-18T15:00:00",
-          end: "2026-09-18T16:00:00",
+          start: "2026-09-21T15:00:00",
+          end: "2026-09-21T16:00:00",
         },
       },
     },
@@ -113,8 +113,8 @@ export function loadEvents(): Event[] {
         name: "面談",
         description: "採用面談の予定",
         timeRange: {
-          start: "2026-09-15T13:30:00",
-          end: "2026-09-15T14:00:00",
+          start: "2026-09-22T13:30:00",
+          end: "2026-09-22T14:00:00",
         },
       },
     },
@@ -122,12 +122,12 @@ export function loadEvents(): Event[] {
       id: "5",
       defaultOrder: 2,
       content: {
-        contextTagId:"5",
+        contextTagId: "5",
         name: "デザインレビュー",
         description: "新しい案の確認会",
         timeRange: {
-          start: "2026-09-19T11:00:00",
-          end: "2026-09-19T12:00:00",
+          start: "2026-09-23T11:00:00",
+          end: "2026-09-23T12:00:00",
         },
       },
     },
