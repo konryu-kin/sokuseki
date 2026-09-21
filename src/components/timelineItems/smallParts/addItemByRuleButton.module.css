@@ -1,0 +1,19 @@
+.addItemButton {
+  /*  */
+}
+.tooltip {
+  /* popoverのデフォルトスタイル（画面中央配置）を打ち消すために必要 */
+  position: absolute;
+  margin: 0;
+
+  /* 紐付けるアンカーの名前と配置場所を指定 */
+  position-area: top; /* ボタンの真上（中央揃え） */
+
+  /* 画面外にはみ出る場合は自動で下側に反転 */
+  position-try-fallbacks: flip-block;
+
+  /* 見た目の装飾
+  background: #333;
+  color: #fff;
+  padding: 8px 12px; */
+}

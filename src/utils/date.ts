@@ -2,6 +2,7 @@ import type { RelativeDateSpecifier } from "../types/relativeDateSpecifier";
 import type {
   AbsoluteDateSpecifier,
   AbsoluteTimeSpecifier,
+  DateTimeSpecifier,
   RelativeTimeSpecifier,
 } from "../types/dateTimeSpecifier";
 
@@ -128,6 +129,11 @@ function formatTime(date: Date) {
   return `${hour}:${minute}`;
 }
 
+function formatDateTime(date: Date) {
+  const seconds = String(date.getSeconds()).padStart(2, "0");
+  return `${formatDate(date)}T${formatTime(date)}:${seconds}`;
+}
+
 function assertTimePart(value: number, name: string, maximum: number) {
   assertInteger(value, name);
   if (value < 0 || value > maximum) {
@@ -178,6 +184,52 @@ export function resolveRelativeTime(
 
   const elapsedMinutes = hour * 60 + specifier.minute;
   return new Date(reference.getTime() + elapsedMinutes * 60 * 1000);
+}
+
+export function resolveDateTimeSpecifier(
+  specifier: DateTimeSpecifier,
+  reference: Date,
+): string {
+  if (Number.isNaN(reference.getTime())) {
+    throw new RangeError("reference must be a valid date");
+  }
+
+  const hasDate = specifier.date !== undefined;
+  let resolvedDate: Date;
+
+  if (!specifier.date) {
+    resolvedDate = new Date(reference);
+  } else if (specifier.date.type === "absolute") {
+    resolvedDate = parseReference(
+      resolveAbsoluteDate(specifier.date.specifier),
+    );
+  } else {
+    resolvedDate = parseReference(
+      resolveRelativeDate(specifier.date.specifier, formatDate(reference)),
+    );
+  }
+
+  if (!specifier.time) {
+    if (hasDate) {
+      resolvedDate.setHours(0, 0, 0, 0);
+    }
+    return formatDateTime(resolvedDate);
+  }
+
+  if (specifier.time.type === "absolute") {
+    const { hour, minute } = specifier.time.specifier;
+    assertTimePart(hour, "hour", 23);
+    assertTimePart(minute, "minute", 59);
+    resolvedDate.setHours(hour, minute, 0, 0);
+    return formatDateTime(resolvedDate);
+  }
+
+  const timeReference = hasDate
+    ? new Date(resolvedDate).setHours(0, 0, 0, 0)
+    : reference.getTime();
+  return formatDateTime(
+    resolveRelativeTime(specifier.time.specifier, new Date(timeReference)),
+  );
 }
 
 export function resolveRelativeDate(

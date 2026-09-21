@@ -8,6 +8,7 @@ import { useEventsStore } from "./stores/useEventsStore";
 import { useContextTagsStore } from "./stores/useContextTagsStore";
 import { getGroupedTimelineItems } from "./data/timelineItems";
 import TimelineItem from "./components/timelineItems/timelineItem";
+import Modal from "./components/modal/modal";
 
 function App() {
   const tasks = useTasksStore((state) => state.tasks);
@@ -35,6 +36,7 @@ function App() {
   ];
 
   return (
+    <>
     <main>
       {sections.map(({ title, dateGroups }) => (
         <section key={title}>
@@ -78,6 +80,8 @@ function App() {
         保存する
       </button>
     </main>
+    <Modal />
+    </>
   );
 }
 
