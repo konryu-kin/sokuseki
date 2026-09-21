@@ -1,6 +1,9 @@
 import { useEventsStore } from "../../stores/useEventsStore";
 import type { Event } from "../../types/event";
 import { useState, useRef, useEffect } from "react";
+import SelectContextTagModal from "./selectContextTagModal";
+import type { ContextTag } from "../../types/contextTag";
+
 type Props = {
   event: Event;
   isOpen: boolean;
@@ -8,7 +11,6 @@ type Props = {
 };
 export default function EditEventModal({ event, isOpen, onClose }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-
   // 親の isOpen の状態に合わせて dialog要素を直接操作する
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -54,6 +56,18 @@ export default function EditEventModal({ event, isOpen, onClose }: Props) {
     editEvent(event.id, form);
     onClose();
   };
+
+  // 文脈タグの選択
+  const [isContextModalOpen, setIsContextModalOpen] = useState(false);
+  const onSelectContextTag = (contextTag: ContextTag) => {
+    setForm({
+      ...form,
+      content: {
+        ...form.content,
+        contextTagId: contextTag.id,
+      },
+    });
+  };
   return (
     <dialog
       ref={dialogRef}
@@ -61,7 +75,7 @@ export default function EditEventModal({ event, isOpen, onClose }: Props) {
       onCancel={handleCancel}
     >
       <h2>イベントを編集する</h2>
-      <form>
+      <form onSubmit={(e) => e.preventDefault()}>
         <div>
           <button type="button" onClick={onClose}>
             close
@@ -84,7 +98,15 @@ export default function EditEventModal({ event, isOpen, onClose }: Props) {
           onChange={handleForm}
           value={form.content.description}
         />
+        <button type="button" onClick={() => setIsContextModalOpen(true)}>
+          文脈タグを選択
+        </button>
       </form>
+      <SelectContextTagModal
+        isOpen={isContextModalOpen}
+        onClose={() => setIsContextModalOpen(false)}
+        onSelect={onSelectContextTag}
+      />
     </dialog>
   );
 }

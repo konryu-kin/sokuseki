@@ -25,6 +25,7 @@ export default function AddEventButton({ parentItem }: Props) {
         id={`selectTip-${itemId}`}
         popover="auto"
         className={styles.tooltip}
+        onClick={(event) => event.stopPropagation()}
         style={{
           positionAnchor: `--addItemButton-${itemId}`,
         }}
