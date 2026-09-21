@@ -4,6 +4,7 @@ import GeneratedItemRulesSelect from "./generatedItemRulesSelect";
 import styles from "./modal.module.css";
 
 export default function Modal() {
+  //TODO:dialogを使ったものに書き換える
   const modals = useModalStore((state) => state.modals);
   const generatedItemRulesSelectContext = useModalStore(
     (state) => state.generateItemRulesSelectContext,
