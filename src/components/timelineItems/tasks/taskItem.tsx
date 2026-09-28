@@ -1,13 +1,17 @@
 import type { Task } from "../../../types/task";
 import styles from "./taskItem.module.css";
 import { useTasksStore } from "../../../stores/useTasksStore";
-import ContextTagsArea from "../smallParts/contextTagsArea";
+import ContextTagsArea from "../commonParts/contextTagsArea";
+import CheckMark from "./checkmark";
+import { useState } from "react";
+import EditTaskModal from "../../modal/editTaskModal";
 
 type Props = {
   task: Task;
 };
 
 export default function TaskItem({ task }: Props) {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { description, dueDate, state } = task.content;
   const updateTaskState = useTasksStore((state) => state.updateTaskState);
   const onToggle =
@@ -19,13 +23,19 @@ export default function TaskItem({ task }: Props) {
       className={[styles.itemBoard, state === "done" ? styles.done : ""]
         .filter(Boolean)
         .join(" ")}
+      onClick={() => setIsEditModalOpen(true)}
     >
       <ContextTagsArea contextTagId={task.content.contextTagId ?? null} />
       {description && <p>{description}</p>}
       {dueDate && <p>{dueDate}まで</p>}
-      <button type="button" onClick={onToggle}>
-        {state === "todo" ? "完了にする" : "未完了にする"}
-      </button>
+      <CheckMark state={state} onClickHandler={onToggle} />
+      {isEditModalOpen && (
+        <EditTaskModal
+          task={task}
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+        />
+      )}
     </div>
   );
 }

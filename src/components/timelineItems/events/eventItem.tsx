@@ -1,7 +1,7 @@
 import type { Event } from "../../../types/event";
 import styles from "./eventItem.module.css";
-import ContextTagsArea from "../smallParts/contextTagsArea";
-import AddEventButton from "../smallParts/addItemByRuleButton";
+import ContextTagsArea from "../commonParts/contextTagsArea";
+import AddEventButton from "../commonParts/addItemByRuleButton";
 import type { TimelineItem } from "../../../types/timelineItem";
 import EditEventModal from "../../modal/editEventModal";
 import { useState } from "react";
