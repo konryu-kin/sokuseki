@@ -65,6 +65,11 @@ export default function HistoryTask({ task }: Props) {
           onClose={() => setIsPostponeModalOpen(false)}
         />
       )}
+      {state === "canceled"
+        ? "破棄されました"
+        : state === "postponed"
+          ? "延期されました"
+          : null}
     </div>
   );
 }
