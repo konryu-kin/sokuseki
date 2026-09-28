@@ -147,23 +147,6 @@ export default function EditTaskModal({ task, isOpen, onClose }: Props) {
             }))
           }
         />
-        <label htmlFor="task-state">状態</label>
-        <select
-          id="task-state"
-          value={form.content.state}
-          onChange={(e) =>
-            setForm((currentForm) => ({
-              ...currentForm,
-              content: {
-                ...currentForm.content,
-                state: e.target.value as Task["content"]["state"],
-              },
-            }))
-          }
-        >
-          <option value="todo">未完了</option>
-          <option value="done">完了</option>
-        </select>
         {form.content.scheduledDate ? (
           <div>
             <label htmlFor="scheduled-date">予定日</label>

@@ -21,7 +21,7 @@ export default function HistoryTask({ task }: Props) {
       : () => updateTaskState(task.id, "todo");
   return (
     <div
-      className={[styles.itemBoard, state === "done" ? styles.done : ""]
+      className={[styles.itemBoard, state !== "todo" ? styles.done : ""]
         .filter(Boolean)
         .join(" ")}
       onClick={() => setIsEditModalOpen(true)}
