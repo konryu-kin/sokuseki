@@ -123,8 +123,9 @@ export default function postponedTask(originalTask: Task, scheduledDate: string)
       id,
       content: {
         ...originalTask.content,
-        scheduledDate
+        scheduledDate,
+        state:"todo"        
       }
-    }
+    } as Task
   )
 }
