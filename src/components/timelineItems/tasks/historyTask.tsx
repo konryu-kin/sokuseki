@@ -5,12 +5,14 @@ import { useTasksStore } from "../../../stores/useTasksStore";
 import CheckMark from "./checkmark";
 import EditTaskModal from "../../modal/editTaskModal";
 import { useState } from "react";
+import PostponeTaskModal from "../../modal/postponeTaskModal";
 
 type Props = {
   task: Task;
 };
 export default function HistoryTask({ task }: Props) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isPostponeModalOpen, setIsPostponeModalOpen] = useState(false);
   const { state } = task.content;
   const updateTaskState = useTasksStore((state) => state.updateTaskState);
   const onToggle =
@@ -31,8 +33,22 @@ export default function HistoryTask({ task }: Props) {
       <CheckMark state={state} onClickHandler={onToggle} />
       {state === "todo" && (
         <div>
-          <button>破棄する</button>
-          <button>延期する</button>
+          <button
+            onClick={(event) => {
+              event.stopPropagation();
+              updateTaskState(task.id, "canceled");
+            }}
+          >
+            破棄する
+          </button>
+          <button
+            onClick={(event) => {
+              event.stopPropagation();
+              setIsPostponeModalOpen(true);
+            }}
+          >
+            延期する
+          </button>
         </div>
       )}
       {isEditModalOpen && (
@@ -40,6 +56,13 @@ export default function HistoryTask({ task }: Props) {
           task={task}
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
+        />
+      )}
+      {isPostponeModalOpen && (
+        <PostponeTaskModal
+          task={task}
+          isOpen={isPostponeModalOpen}
+          onClose={() => setIsPostponeModalOpen(false)}
         />
       )}
     </div>
