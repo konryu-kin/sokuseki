@@ -1,12 +1,17 @@
 import type { Task } from "../../../types/task";
+import styles from "./taskItem.module.css";
 import ContextTagsArea from "../commonParts/contextTagsArea";
 
 type Props = {
   task: Task;
 };
 export default function HistoryTask({ task }: Props) {
+  const {state} = task.content
   return (
-    <div>
+    <div
+      className={[styles.itemBoard, state === "done" ? styles.done : ""]
+          .filter(Boolean)
+          .join(" ")}>
       {task.content.contextTagId ? (
         <ContextTagsArea contextTagId={task.content.contextTagId} />
       ) : null}

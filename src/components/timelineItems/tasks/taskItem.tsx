@@ -1,41 +1,24 @@
 import type { Task } from "../../../types/task";
-import styles from "./taskItem.module.css";
-import { useTasksStore } from "../../../stores/useTasksStore";
-import ContextTagsArea from "../commonParts/contextTagsArea";
-import CheckMark from "./checkmark";
-import { useState } from "react";
-import EditTaskModal from "../../modal/editTaskModal";
+import ActiveTask from "./activeTask";
+import HistoryTask from "./historyTask";
 
 type Props = {
   task: Task;
 };
 
 export default function TaskItem({ task }: Props) {
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const { description, dueDate, state } = task.content;
-  const updateTaskState = useTasksStore((state) => state.updateTaskState);
-  const onToggle =
-    state === "todo"
-      ? () => updateTaskState(task.id, "done")
-      : () => updateTaskState(task.id, "todo");
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const scheduledDate = task.content.scheduledDate
+    ? new Date(task.content.scheduledDate)
+    : null;
   return (
-    <div
-      className={[styles.itemBoard, state === "done" ? styles.done : ""]
-        .filter(Boolean)
-        .join(" ")}
-      onClick={() => setIsEditModalOpen(true)}
-    >
-      <ContextTagsArea contextTagId={task.content.contextTagId ?? null} />
-      {description && <p>{description}</p>}
-      {dueDate && <p>{dueDate}まで</p>}
-      <CheckMark state={state} onClickHandler={onToggle} />
-      {isEditModalOpen && (
-        <EditTaskModal
-          task={task}
-          isOpen={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
-        />
+    <>
+      {!scheduledDate || today <= scheduledDate ? (
+        <ActiveTask task={task} />
+      ) : (
+        <HistoryTask task={task} />
       )}
-    </div>
+    </>
   );
 }
