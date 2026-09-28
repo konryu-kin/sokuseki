@@ -23,13 +23,11 @@ export default function TaskItem({ task }: Props) {
       className={[styles.itemBoard, state === "done" ? styles.done : ""]
         .filter(Boolean)
         .join(" ")}
+      onClick={() => setIsEditModalOpen(true)}
     >
       <ContextTagsArea contextTagId={task.content.contextTagId ?? null} />
       {description && <p>{description}</p>}
       {dueDate && <p>{dueDate}まで</p>}
-      <button type="button" onClick={() => setIsEditModalOpen(true)}>
-        編集
-      </button>
       <CheckMark state={state} onClickHandler={onToggle} />
       {isEditModalOpen && (
         <EditTaskModal
