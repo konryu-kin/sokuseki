@@ -1,7 +1,7 @@
 import type { Task } from "../../../types/task";
 import styles from "./taskItem.module.css";
 import { useTasksStore } from "../../../stores/useTasksStore";
-import ContextTagsArea from "../smallParts/contextTagsArea";
+import ContextTagsArea from "../commonParts/contextTagsArea";
 
 type Props = {
   task: Task;
