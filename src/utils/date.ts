@@ -116,7 +116,7 @@ function getOffsetMonth(reference: Date, offset: number) {
   return { year, month };
 }
 
-function formatDate(date: Date) {
+export function formatLocalDate(date: Date) {
   const year = String(date.getFullYear()).padStart(4, "0");
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
@@ -129,9 +129,9 @@ function formatTime(date: Date) {
   return `${hour}:${minute}`;
 }
 
-function formatDateTime(date: Date) {
+export function formatLocalDateTime(date: Date) {
   const seconds = String(date.getSeconds()).padStart(2, "0");
-  return `${formatDate(date)}T${formatTime(date)}:${seconds}`;
+  return `${formatLocalDate(date)}T${formatTime(date)}:${seconds}`;
 }
 
 function assertTimePart(value: number, name: string, maximum: number) {
@@ -152,7 +152,7 @@ export function resolveAbsoluteDate(specifier: AbsoluteDateSpecifier): string {
           specifier.day,
         );
 
-  return formatDate(resolved);
+  return formatLocalDate(resolved);
 }
 
 export function resolveAbsoluteTime(specifier: AbsoluteTimeSpecifier): string {
@@ -205,7 +205,7 @@ export function resolveDateTimeSpecifier(
     );
   } else {
     resolvedDate = parseReference(
-      resolveRelativeDate(specifier.date.specifier, formatDate(reference)),
+      resolveRelativeDate(specifier.date.specifier, formatLocalDate(reference)),
     );
   }
 
@@ -213,7 +213,7 @@ export function resolveDateTimeSpecifier(
     if (hasDate) {
       resolvedDate.setHours(0, 0, 0, 0);
     }
-    return formatDateTime(resolvedDate);
+    return formatLocalDateTime(resolvedDate);
   }
 
   if (specifier.time.type === "absolute") {
@@ -221,13 +221,13 @@ export function resolveDateTimeSpecifier(
     assertTimePart(hour, "hour", 23);
     assertTimePart(minute, "minute", 59);
     resolvedDate.setHours(hour, minute, 0, 0);
-    return formatDateTime(resolvedDate);
+    return formatLocalDateTime(resolvedDate);
   }
 
   const timeReference = hasDate
     ? new Date(resolvedDate).setHours(0, 0, 0, 0)
     : reference.getTime();
-  return formatDateTime(
+  return formatLocalDateTime(
     resolveRelativeTime(specifier.time.specifier, new Date(timeReference)),
   );
 }
@@ -299,5 +299,5 @@ export function resolveRelativeDate(
     }
   }
 
-  return formatDate(resolved);
+  return formatLocalDate(resolved);
 }

@@ -2,17 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import postponedTask from "../../data/tasks";
 import { useTasksStore } from "../../stores/useTasksStore";
 import type { Task } from "../../types/task";
+import { formatLocalDate } from "../../utils/date";
 
 type Props = {
   task: Task;
   isOpen: boolean;
   onClose: () => void;
 };
-
-function formatLocalDate(date: Date) {
-  const pad = (value: number) => String(value).padStart(2, "0");
-  return `${String(date.getFullYear()).padStart(4, "0")}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
-}
 
 export default function PostponeTaskModal({ task, isOpen, onClose }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);

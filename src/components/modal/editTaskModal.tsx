@@ -4,16 +4,7 @@ import { useContextTagsStore } from "../../stores/useContextTagsStore";
 import type { Task } from "../../types/task";
 import type { ContextTag } from "../../types/contextTag";
 import SelectContextTagModal from "./selectContextTagModal";
-
-function formatLocalDate(date: Date) {
-  const pad = (value: number) => String(value).padStart(2, "0");
-  return `${String(date.getFullYear()).padStart(4, "0")}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
-}
-
-function formatLocalDateTime(date: Date) {
-  const pad = (value: number) => String(value).padStart(2, "0");
-  return `${formatLocalDate(date)}T${pad(date.getHours())}:${pad(date.getMinutes())}:00`;
-}
+import { formatLocalDate, formatLocalDateTime } from "../../utils/date";
 
 type Props = {
   task: Task;
