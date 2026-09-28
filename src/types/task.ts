@@ -6,7 +6,7 @@ export type Task = {
   defaultOrder: number; // (new Date(scheduledDate)).getTime()をデフォルトにしたい
   content: {
     contextTagId?: ContextTag["id"];
-    state: "todo" | "done";
+    state: "todo" | "done" | "postponed" | "canceled";
     scheduledDate?: string;
     description?: string;
     dueDate?: string;

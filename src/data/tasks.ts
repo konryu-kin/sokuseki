@@ -114,3 +114,18 @@ export function getDisplayGroupedTasks(tasks: Task[]): DisplayGroupedTasks {
     ),
   };
 }
+
+export default function postponedTask(originalTask: Task, scheduledDate: string){
+  const id = crypto.randomUUID();
+  return (
+    {
+      ...originalTask,
+      id,
+      content: {
+        ...originalTask.content,
+        scheduledDate,
+        state:"todo"        
+      }
+    } as Task
+  )
+}

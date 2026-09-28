@@ -3,12 +3,7 @@ import type { Event } from "../../types/event";
 import { useState, useRef, useEffect } from "react";
 import SelectContextTagModal from "./selectContextTagModal";
 import type { ContextTag } from "../../types/contextTag";
-
-function formatLocalDateTime(date: Date) {
-  const pad = (value: number) => String(value).padStart(2, "0");
-  const year = String(date.getFullYear()).padStart(4, "0");
-  return `${year}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
-}
+import { formatLocalDateTime } from "../../utils/date";
 
 type Props = {
   event: Event;

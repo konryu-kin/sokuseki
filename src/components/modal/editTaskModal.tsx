@@ -4,16 +4,7 @@ import { useContextTagsStore } from "../../stores/useContextTagsStore";
 import type { Task } from "../../types/task";
 import type { ContextTag } from "../../types/contextTag";
 import SelectContextTagModal from "./selectContextTagModal";
-
-function formatLocalDate(date: Date) {
-  const pad = (value: number) => String(value).padStart(2, "0");
-  return `${String(date.getFullYear()).padStart(4, "0")}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
-}
-
-function formatLocalDateTime(date: Date) {
-  const pad = (value: number) => String(value).padStart(2, "0");
-  return `${formatLocalDate(date)}T${pad(date.getHours())}:${pad(date.getMinutes())}:00`;
-}
+import { formatLocalDate, formatLocalDateTime } from "../../utils/date";
 
 type Props = {
   task: Task;
@@ -156,23 +147,6 @@ export default function EditTaskModal({ task, isOpen, onClose }: Props) {
             }))
           }
         />
-        <label htmlFor="task-state">状態</label>
-        <select
-          id="task-state"
-          value={form.content.state}
-          onChange={(e) =>
-            setForm((currentForm) => ({
-              ...currentForm,
-              content: {
-                ...currentForm.content,
-                state: e.target.value as Task["content"]["state"],
-              },
-            }))
-          }
-        >
-          <option value="todo">未完了</option>
-          <option value="done">完了</option>
-        </select>
         {form.content.scheduledDate ? (
           <div>
             <label htmlFor="scheduled-date">予定日</label>
