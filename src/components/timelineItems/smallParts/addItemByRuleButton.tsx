@@ -6,11 +6,15 @@ type Props = {
 import GeneratedItemRulesSelect from "../../modal/generatedItemRulesSelect";
 export default function AddEventButton({ parentItem }: Props) {
   const itemId = `${parentItem.type}-${parentItem.data.id}`;
+  const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+  };
   return (
     <>
       <button
         popoverTarget={`selectTip-${itemId}`}
         className={styles.addItemButton}
+        onClick={handleButtonClick}
         style={{
           anchorName: `--addItemButton-${itemId}`,
         }}
@@ -21,6 +25,7 @@ export default function AddEventButton({ parentItem }: Props) {
         id={`selectTip-${itemId}`}
         popover="auto"
         className={styles.tooltip}
+        onClick={(event) => event.stopPropagation()}
         style={{
           positionAnchor: `--addItemButton-${itemId}`,
         }}

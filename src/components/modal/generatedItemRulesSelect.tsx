@@ -20,11 +20,12 @@ export default function GeneratedItemRulesSelect({ parentItem }: Props) {
     : null;
   const generatedItemOptions = contextTag?.generatedItemOptions;
   return (
-    <div>
+    <div onClick={(event) => event.stopPropagation()}>
       <p>追加するイベントを選択</p>
       {generatedItemOptions?.map((option) => (
         <button
           key={option.optionName}
+          type="button"
           onClick={() =>
             addItemsByRule(parentItem, option.rules, addEvent, addTask)
           }
