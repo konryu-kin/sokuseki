@@ -9,18 +9,8 @@ import { useContextTagsStore } from "./stores/useContextTagsStore";
 import { getGroupedTimelineItems } from "./data/timelineItems";
 import TimelineItem from "./components/timelineItems/timelineItem";
 import Modal from "./components/modal/modal";
-import { supabase } from "./lib/supabase";
 
 function App() {
-  (async () => {
-    console.log("loading...");
-    const { data, error } = await supabase.from("tasks").select("*");
-
-    console.log("loaded");
-    console.log("data:", data);
-    console.log("error:", error);
-  })();
-
   const tasks = useTasksStore((state) => state.tasks);
   const setTasks = useTasksStore((state) => state.setTasks);
 
