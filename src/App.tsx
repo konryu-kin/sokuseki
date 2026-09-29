@@ -9,8 +9,18 @@ import { useContextTagsStore } from "./stores/useContextTagsStore";
 import { getGroupedTimelineItems } from "./data/timelineItems";
 import TimelineItem from "./components/timelineItems/timelineItem";
 import Modal from "./components/modal/modal";
+import { supabase } from "./lib/supabase";
 
 function App() {
+  (async () => {
+    console.log("loading...");
+    const { data, error } = await supabase.from("tasks").select("*");
+
+    console.log("loaded");
+    console.log("data:", data);
+    console.log("error:", error);
+  })();
+
   const tasks = useTasksStore((state) => state.tasks);
   const setTasks = useTasksStore((state) => state.setTasks);
 
@@ -37,50 +47,53 @@ function App() {
 
   return (
     <>
-    <main>
-      {sections.map(({ title, dateGroups }) => (
-        <section key={title}>
-          <h2>{title}</h2>
+      <main>
+        {sections.map(({ title, dateGroups }) => (
+          <section key={title}>
+            <h2>{title}</h2>
+            <div>
+              {dateGroups.length === 0 ? (
+                <p>なし</p>
+              ) : (
+                dateGroups.map(({ date, items }) => (
+                  <div key={date}>
+                    <p>{date}</p>
+                    {items.map((item) => (
+                      <TimelineItem
+                        key={`${item.type}-${item.data.id}`}
+                        timelineItem={item}
+                      />
+                    ))}
+                  </div>
+                ))
+              )}
+            </div>
+          </section>
+        ))}
+
+        <section>
+          <h2>日付なし</h2>
           <div>
-            {dateGroups.length === 0 ? (
+            {groupedTasks.undated.length === 0 ? (
               <p>なし</p>
             ) : (
-              dateGroups.map(({ date, items }) => (
-                <div key={date}>
-                  <p>{date}</p>
-                  {items.map((item) => (
-                    <TimelineItem key={`${item.type}-${item.data.id}`} timelineItem={item} />
-                  ))}
-                </div>
+              groupedTasks.undated.map((task) => (
+                //TODO: TimelineItemへの置き換え
+                <TaskItem key={task.id} task={task} />
               ))
             )}
           </div>
         </section>
-      ))}
-
-      <section>
-        <h2>日付なし</h2>
-        <div>
-          {groupedTasks.undated.length === 0 ? (
-            <p>なし</p>
-          ) : (
-            groupedTasks.undated.map((task) => (
-              //TODO: TimelineItemへの置き換え
-              <TaskItem key={task.id} task={task} />
-            ))
-          )}
-        </div>
-      </section>
-      <button
-        onClick={() => {
-          saveTasks(tasks);
-          saveEvents(events);
-        }}
-      >
-        保存する
-      </button>
-    </main>
-    <Modal />
+        <button
+          onClick={() => {
+            saveTasks(tasks);
+            saveEvents(events);
+          }}
+        >
+          保存する
+        </button>
+      </main>
+      <Modal />
     </>
   );
 }
