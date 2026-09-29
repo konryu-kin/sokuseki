@@ -5,6 +5,7 @@ import type { Task } from "../../types/task";
 import type { ContextTag } from "../../types/contextTag";
 import SelectContextTagModal from "./selectContextTagModal";
 import { formatLocalDate, formatLocalDateTime } from "../../utils/date";
+import styles from "./editTaskModal.module.css";
 
 type Props = {
   task: Task;
@@ -123,7 +124,6 @@ export default function EditTaskModal({ task, isOpen, onClose }: Props) {
       onClick={handleBackdropClick}
       onCancel={handleCancel}
     >
-      <h2>タスクを編集する</h2>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -131,14 +131,20 @@ export default function EditTaskModal({ task, isOpen, onClose }: Props) {
         }}
       >
         <div>
-          <button type="button" onClick={onClose}>
-            close
+          <button
+            type="button"
+            className={styles.completeButton}
+            onClick={onClose}
+          >
+            x
           </button>
-          <button type="submit">save</button>
+          <button type="submit" className={styles.closeButton}>
+            v
+          </button>
         </div>
-        <label htmlFor="task-description">タスク</label>
         <textarea
           id="task-description"
+          className={styles.description}
           value={form.content.description ?? ""}
           onChange={(e) =>
             setForm((currentForm) => ({
@@ -157,7 +163,6 @@ export default function EditTaskModal({ task, isOpen, onClose }: Props) {
               value={form.content.scheduledDate.slice(0, 10)}
               onChange={(e) => updateScheduledDate("date", e.target.value)}
             />
-            <label htmlFor="scheduled-time">予定時刻</label>
             <input
               required
               type="time"
@@ -167,17 +172,16 @@ export default function EditTaskModal({ task, isOpen, onClose }: Props) {
               onChange={(e) => updateScheduledDate("time", e.target.value)}
             />
             <button type="button" onClick={removeScheduledDate}>
-              予定日時を削除
+              x
             </button>
           </div>
         ) : (
           <button type="button" onClick={addScheduledDate}>
-            予定日時を設定する
+            +
           </button>
         )}
         {form.content.dueDate ? (
           <div>
-            <label htmlFor="task-due-date">期限</label>
             <input
               required
               type="date"
@@ -191,22 +195,22 @@ export default function EditTaskModal({ task, isOpen, onClose }: Props) {
               }
             />
             <button type="button" onClick={removeDueDate}>
-              期限を削除
+              x
             </button>
           </div>
         ) : (
           <button type="button" onClick={addDueDate}>
-            期限を設定する
+            +
           </button>
         )}
         <div>
           <span>{selectedContextTag?.name ?? "文脈タグ未設定"}</span>
           <button type="button" onClick={() => setIsContextModalOpen(true)}>
-            文脈タグを選択
+            +
           </button>
           {form.content.contextTagId && (
             <button type="button" onClick={removeContextTag}>
-              文脈タグを解除
+              x
             </button>
           )}
         </div>
