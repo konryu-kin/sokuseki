@@ -30,7 +30,7 @@ function App() {
   const setContextTags = useContextTagsStore((state) => state.setContextTags);
 
   useEffect(() => {
-    setTasks(loadTasks());
+    loadTasks().then((res) => setTasks(res))
     setEvents(loadEvents());
     setContextTags(loadContextTags());
   }, [setTasks, setEvents, setContextTags]);

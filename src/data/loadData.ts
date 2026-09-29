@@ -1,65 +1,15 @@
 import type { Task } from "../types/task";
 import type { Event } from "../types/event";
 import type { ContextTag } from "../types/contextTag";
+import { supabase } from "../lib/supabase";
+import { toTask } from "./converter";
 
-export function loadTasks(): Task[] {
-  // const savedData = localStorage.tasksData;
-  // if (savedData) {
-  //   return JSON.parse(savedData).data;
-  // }
-
-  return [
-    {
-      id: "1",
-      defaultOrder: 2,
-      content: {
-        contextTagId: "5",
-        state: "todo",
-        scheduledDate: "2026-09-17",
-        description: "Reactの学習を進める",
-        dueDate: "2026-09-20",
-      },
-    },
-    {
-      id: "2",
-      defaultOrder: 1,
-      content: {
-        state: "done",
-        scheduledDate: "2026-09-16",
-        description: "買い物リストを確認する",
-        dueDate: "2026-09-16",
-      },
-    },
-    {
-      id: "3",
-      defaultOrder: 3,
-      content: {
-        state: "todo",
-        scheduledDate: "2026-09-18",
-        description: "チームミーティングの準備をする",
-      },
-    },
-    {
-      id: "4",
-      defaultOrder: 1,
-      content: {
-        state: "done",
-        description: "メールの返信を完了する",
-        dueDate: "2026-09-15",
-      },
-    },
-    {
-      id: "5",
-      defaultOrder: 2,
-      content: {
-        contextTagId: "5",
-        state: "todo",
-        scheduledDate: "2026-09-19",
-        description: "新しいデザイン案を考える",
-        dueDate: "2026-09-22",
-      },
-    },
-  ];
+export async function loadTasks(): Promise<Task[]> {
+  const { data, error } = await supabase.from("tasks").select("*");
+  if (error) {
+    throw error;
+  }
+  return data.map(toTask);
 }
 export function loadEvents(): Event[] {
   // const savedData = localStorage.eventsData;
