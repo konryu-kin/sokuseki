@@ -1,5 +1,7 @@
 import type { Task } from "../types/task";
 import { isToday, isTomorrow } from "../utils/date";
+import { supabase } from "../lib/supabase";
+import { toTask } from "./converter";
 
 export type TaskGroupName = "past" | "today" | "tomorrow" | "future";
 export type DateTaskMap = Record<string, Task[]>;
@@ -50,9 +52,8 @@ export function getDateTaskMap(tasks: Task[]): DateTaskMap {
   return dateTaskMap;
 }
 
-export function getUndatedTasks(tasks:Task[]): Task[] {
-  const undatedTasks = tasks.filter((task) => !task.content.scheduledDate)
-  return undatedTasks
+export function getUndatedTasks(tasks: Task[]): Task[] {
+  return tasks.filter((task) => !task.content.scheduledDate);
 }
 
 function getGroupedTasks(tasks: Task[]): GroupedTasks {
@@ -115,17 +116,38 @@ export function getDisplayGroupedTasks(tasks: Task[]): DisplayGroupedTasks {
   };
 }
 
-export default function postponedTask(originalTask: Task, scheduledDate: string){
+export default function postponedTask(originalTask: Task, scheduledDate: string) {
   const id = crypto.randomUUID();
-  return (
-    {
-      ...originalTask,
-      id,
-      content: {
-        ...originalTask.content,
-        scheduledDate,
-        state:"todo"        
-      }
-    } as Task
-  )
+
+  return {
+    ...originalTask,
+    id,
+    content: {
+      ...originalTask.content,
+      scheduledDate,
+      state: "todo",
+    },
+  } as Task;
+}
+
+// DBにタスクを新しく追加して、追加したタスクを返す関数
+export async function createTask(task: Omit<Task, "id">): Promise<Task> {
+  const { data, error } = await supabase
+    .from("tasks")
+    .insert({
+      default_order: task.defaultOrder,
+      context_tag_id: task.content.contextTagId ?? null,
+      state: task.content.state,
+      scheduled_date: task.content.scheduledDate ?? null,
+      description: task.content.description ?? null,
+      due_date: task.content.dueDate ?? null,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return toTask(data);
 }
