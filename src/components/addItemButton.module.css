@@ -1,0 +1,175 @@
+.fab {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 10;
+  display: grid;
+  width: 56px;
+  height: 56px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #195b4b;
+  color: #fff;
+  box-shadow: 0 4px 14px rgb(20 50 42 / 24%);
+  cursor: pointer;
+  font-size: 32px;
+  line-height: 1;
+}
+
+.fab:hover {
+  background: #124638;
+}
+
+.dialog {
+  width: min(90vw, 480px);
+  max-height: min(85vh, 760px);
+  padding: 24px;
+  overflow-y: auto;
+  border: 1px solid #d5ded9;
+  border-radius: 8px;
+  color: #1d2924;
+}
+
+.dialog::backdrop {
+  background: rgb(14 25 21 / 48%);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.title select {
+  max-width: 100%;
+  padding: 6px 28px 6px 8px;
+  border: 1px solid #aab8b0;
+  border-radius: 4px;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+}
+
+.fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.fieldset legend {
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tagButton,
+.secondaryButton {
+  min-height: 36px;
+  padding: 7px 12px;
+  border: 1px solid #bac8c0;
+  border-radius: 6px;
+  background: #fff;
+  color: #26352e;
+  cursor: pointer;
+}
+
+.tagButton[aria-pressed="true"] {
+  border-color: #195b4b;
+  background: #e3f1eb;
+  color: #124638;
+}
+
+.emptyTags {
+  color: #68766e;
+  font-size: 0.9rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.field input,
+.field textarea,
+.fieldset > input[type="time"] {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid #bac8c0;
+  border-radius: 4px;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+}
+
+.field textarea {
+  resize: vertical;
+}
+
+.checkboxField {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkboxField input {
+  width: 18px;
+  height: 18px;
+  accent-color: #195b4b;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.submitButton {
+  min-height: 40px;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 6px;
+  background: #195b4b;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+}
+
+.submitButton:hover {
+  background: #124638;
+}
+
+.error {
+  margin: 0;
+  color: #a12f24;
+}
+
+@media (max-width: 480px) {
+  .fab {
+    right: 16px;
+    bottom: 16px;
+  }
+
+  .dialog {
+    padding: 18px;
+  }
+}

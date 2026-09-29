@@ -9,6 +9,7 @@ import { useContextTagsStore } from "./stores/useContextTagsStore";
 import { getGroupedTimelineItems } from "./data/timelineItems";
 import TimelineItem from "./components/timelineItems/timelineItem";
 import Modal from "./components/modal/modal";
+import AddItemButton from "./components/addItemButton";
 
 function App() {
   const tasks = useTasksStore((state) => state.tasks);
@@ -20,7 +21,7 @@ function App() {
   const setContextTags = useContextTagsStore((state) => state.setContextTags);
 
   useEffect(() => {
-    loadTasks().then((res) => setTasks(res))
+    loadTasks().then((res) => setTasks(res));
     setEvents(loadEvents());
     setContextTags(loadContextTags());
   }, [setTasks, setEvents, setContextTags]);
@@ -84,6 +85,7 @@ function App() {
         </button>
       </main>
       <Modal />
+      <AddItemButton />
     </>
   );
 }
